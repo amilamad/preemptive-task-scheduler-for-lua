@@ -1,5 +1,10 @@
 #include "lua.h"
 
+void LUAHook(lua_State* L, lua_Debug *ar)
+{
+	lua_yield(L, 0);
+}
+
 int call_function_non_blocking(lua_State* pLuaState, const char* functionName, float dt)
 {
 	lua_getglobal(pLuaState, functionName);
