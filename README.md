@@ -8,5 +8,6 @@ There is no make or cmake script for building this project. Just copy Preemptive
 
 # Running 
 Place non_blocking_test.lua in the workspace.
+Then run the .exe that was built from previous step.
 
 
