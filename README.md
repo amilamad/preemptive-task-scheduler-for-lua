@@ -1,6 +1,6 @@
 ## preemptive-task-scheduler-for-lua
 
-Prblem we are trying to solve is that when running a long .lua scrpt function it will block the main thread. This often a problem in realtime systems like game engines. This code will intterupt the lua interpreter using lua_hook that for given instruction count and give the control back to the calling thread. Then again calling the call_function_non_blocking() will resume the lua function execution from last intterupted point of the code.
+Problem we are trying to solve is that when running a long .lua scrpt function it will block the main thread. This often a problem in realtime systems like game engines. This code will intterupt the lua interpreter using lua_hook that for given instruction count and give the control back to the calling thread. Then again calling the call_function_non_blocking() will resume the lua function execution from last intterupted point of the code.
 
 # Build information
 Please dowbload lua c-api from https://www.lua.org/download.html
