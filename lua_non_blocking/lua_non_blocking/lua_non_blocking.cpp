@@ -15,6 +15,9 @@ struct ScriptRunner_impl
 
 void LUAHook(lua_State* L, lua_Debug *ar)
 {
+	int top = lua_gettop(L);
+	printf("Stack top %d", top);
+
 	lua_yield(L, 0);
 }
 
@@ -37,7 +40,7 @@ int call_function_non_blocking(lua_State* pLuaState, const char* functionName)
 	else
 	{
 		// Handle lua error.
-		return -1;
+		throw std::exception("Error executing given lua function error code = " + errorState);
 	}
 }
 
@@ -62,8 +65,7 @@ ScriptRunner::ScriptRunner(const std::string& script, const std::string& scriptF
 }
 
 ScriptRunner::~ScriptRunner()
-{
-
+{	
 }
 
 void ScriptRunner::Update(float dt)
@@ -74,10 +76,6 @@ void ScriptRunner::Update(float dt)
 	{
 		// lua function executed successfully.
 		return;
-	}
-	else if (functionState == -1)
-	{
-		throw std::exception("CallFunctionNonBlocking error \n");
 	}
 
 	// Run the non script loop
