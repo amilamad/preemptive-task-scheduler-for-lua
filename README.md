@@ -1,17 +1,19 @@
 # Preemptive-task-scheduler-for-lua
 
-Problem we are trying to solve is that when running a long lua scrpt function it will block the execution thread. This often a problem in realtime systems like game engines. This code will intterupt the lua interpreter using lua_hook that for given instruction count and give the control back to the calling thread. Then again calling the call_function_non_blocking() will resume the lua function execution from last intterupted point of the code.
+Problem we are trying to solve is that when running a long lua scrpt function it will block the execution thread. This often a problem in realtime systems like game engines. This code will run in the same thread as Update() is calling. Therefore, Engine binding code that will work only on the Engine context can be called safly from the lua script.
 
-# Build informationd
-Please dowbload lua c-api from https://www.lua.org/download.html
-There is no make or cmake script for building this project. Just copy Preemptive_lua_test.c to visual studio or compile with your favorite compiler. 
+# Build information
+Open the soultion with Visual studio and run and see the TestApplication. 
+lua_non_blocking.lib can be linked to your own project for running lua code without blocking.
+Added the static build of lua to the \lua folder. If you want to use a different version download the static binaries from lua offical site.
+http://luabinaries.sourceforge.net/download.html
 
 # Running 
 Place non_blocking_test.lua in the workspace.
 Then run the .exe that was built from previous step.
 
-Only Tested with Visual Studio 2013(v120). 
+Only Tested with Visual Studio 2017(toolset v141) with x64.
 
 #### Key Words
-Lua script, Non-blicking, preemptive, C, C++, GameDev, GameEngine, Script Engine 
+Lua script, Non-blocking, preemptive, C, C++, GameDev, GameEngine, Script Engine 
 
