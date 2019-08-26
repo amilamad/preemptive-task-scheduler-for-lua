@@ -1,8 +1,8 @@
 # Preemptive-task-scheduler-for-lua
 
-Problem we are trying to solve is that when running a long lua scrpt function it will block the execution thread. This often a problem in realtime systems like game engines. 
+Problem we are trying to solve is that when running a long lua scrpt function it will block the execution thread. This often a problem in realtime systems like game engines. This code will run in the same thread as Update() is calling. Therefore, Engine binding code that will work only on the Engine context can be called safly from the lua script.
 
-# Build informationd
+# Build information
 Open the soultion with Visual studio and run and see the TestApplication. 
 lua_non_blocking.lib can be linked to your own project for running lua code without blocking.
 Added the static build of lua to the \lua folder. If you want to use a different version download the static binaries from lua offical site.
