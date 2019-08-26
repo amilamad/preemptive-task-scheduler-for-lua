@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua_non_blocking", "lua_non_blocking\lua_non_blocking.vcxproj", "{E7662B3C-4C07-40F3-A268-F8FE0C138355}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestApplication", "TestApplication\TestApplication.vcxproj", "{BDB0C1D9-34C5-43B1-8CA0-3D4FF62CE4CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E7662B3C-4C07-40F3-A268-F8FE0C138355} = {E7662B3C-4C07-40F3-A268-F8FE0C138355}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

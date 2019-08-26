@@ -5,7 +5,7 @@ void MainLoop(float);
 
 int main()
 {
-	ScriptRunner scriptRunner(std::string("test.lua"), std::string("lua_main"), &MainLoop);
+	ScriptRunner scriptRunner(std::string("non_blocking_test.lua"), std::string("heavy_function"), 100, &MainLoop);
 	while (true)
 	{
 		constexpr float simpleDeltaTime = 1 / 60.0;
@@ -15,5 +15,5 @@ int main()
 
 void MainLoop(float dt) 
 {
-
+	std::cout << "Main loop is in control" << std::endl;
 }

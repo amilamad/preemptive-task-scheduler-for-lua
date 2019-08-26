@@ -1,8 +1,11 @@
 #include <exception>
 
-#include "lua.h"
-#include "lualib.h"
-#include "lauxlib.h"
+extern "C" {
+	#include "lua.h"
+	#include "lualib.h"
+	#include "lauxlib.h"
+}
+
 #include "lua_non_blocking.h"
 
 struct ScriptRunner_impl
@@ -15,18 +18,18 @@ void LUAHook(lua_State* L, lua_Debug *ar)
 	lua_yield(L, 0);
 }
 
-int call_function_non_blocking(lua_State* pLuaState, const char* functionName, float dt)
+int call_function_non_blocking(lua_State* pLuaState, const char* functionName)
 {
-	lua_getglobal(pLuaState, functionName);
+	int errorState = lua_getglobal(pLuaState, functionName);
 
 	// lua function is resumed from the last interrupted position.
-	int ret = lua_resume(pLuaState, NULL, 0);
-	if (ret == LUA_YIELD)
+	errorState = lua_resume(pLuaState, pLuaState, 0);
+	if (errorState == LUA_YIELD)
 	{
 		// lua function execution is interrupted.
 		return 1;
 	}
-	else if (ret == 0)
+	else if (errorState == LUA_OK)
 	{
 		// lua function is returned successfully.
 		return 0;
@@ -38,10 +41,11 @@ int call_function_non_blocking(lua_State* pLuaState, const char* functionName, f
 	}
 }
 
-ScriptRunner::ScriptRunner(const std::string& script, const std::string& scriptFunctionToRun, std::function<void(float)> mainLoopFunction) : m_script(script),
-																																		m_scriptFunctionToRun(m_scriptFunctionToRun),
-																																		m_mainLoopFunction(mainLoopFunction),
-																																		m_pScriptRunner_impl(std::make_unique<ScriptRunner_impl>())
+ScriptRunner::ScriptRunner(const std::string& script, const std::string& scriptFunctionToRun, unsigned int scriptInterruptInstructionCount, std::function<void(float)> mainLoopFunction) : m_script(script),
+																																												m_scriptFunctionToRun(scriptFunctionToRun),
+																																												m_scriptInterruptInstructionCount(scriptInterruptInstructionCount),
+																																												m_mainLoopFunction(mainLoopFunction),
+																																												m_pScriptRunner_impl(std::make_unique<ScriptRunner_impl>())
 {
 	m_pScriptRunner_impl->pLuaState = luaL_newstate();
 	luaL_openlibs(m_pScriptRunner_impl->pLuaState);
@@ -54,14 +58,18 @@ ScriptRunner::ScriptRunner(const std::string& script, const std::string& scriptF
 	}
 
 	// Add a count hook that will trigger after "count" number instructions
-	int count = 100;
-	lua_sethook(m_pScriptRunner_impl->pLuaState, LUAHook, LUA_MASKCOUNT, count);
+	lua_sethook(m_pScriptRunner_impl->pLuaState, LUAHook, LUA_MASKCOUNT, m_scriptInterruptInstructionCount);
+}
+
+ScriptRunner::~ScriptRunner()
+{
+
 }
 
 void ScriptRunner::Update(float dt)
 {
 	// Update a lua function with preemptive scheduling.
-	int functionState = call_function_non_blocking(m_pScriptRunner_impl->pLuaState, m_scriptFunctionToRun.c_str(), 0.0);
+	int functionState = call_function_non_blocking(m_pScriptRunner_impl->pLuaState, m_scriptFunctionToRun.c_str());
 	if (functionState == 0)
 	{
 		// lua function executed successfully.
